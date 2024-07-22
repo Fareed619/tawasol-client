@@ -13,6 +13,8 @@ import Alert from "./components/Alert";
 import Login from "./components/Users/Login";
 import Private from "./components/Private";
 import Home from "./components/Home";
+import ProfileForm from "./components/ProfileForms/ProfileForm";
+import AddEducation from "./components/ProfileForms/AddEducation";
 
 const options = {
   position: positions.TOP_RIGHT,
@@ -36,6 +38,14 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/home" element={<Private component={Home} />} />
+                <Route
+                  path="/create-profile"
+                  element={<Private component={ProfileForm} />}
+                />
+                <Route
+                  path="/add-education"
+                  element={<Private component={AddEducation} />}
+                />
               </Routes>
             </Fragment>
           </AlertProvider>

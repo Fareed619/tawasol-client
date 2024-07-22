@@ -15,6 +15,8 @@ const Register = ({ isAuthenticated, register, showAlert }) => {
     password2: "",
   });
 
+  // fareed5@gmail.com 
+  // 1234567
   const { name, email, password, password2 } = formData;
 
   const onChange = (e) => {
