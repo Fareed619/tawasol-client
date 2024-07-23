@@ -20,6 +20,7 @@ import { setAuthToken } from "./utils";
 import { loadUser } from "./redux/modules/users";
 import Developers from "./components/Developers";
 import Profile from "./components/Profile";
+import Settings from "./components/Settings";
 const options = {
   position: positions.TOP_RIGHT,
   timeout: 5000,
@@ -68,6 +69,14 @@ function App() {
                 <Route
                   path="/profile/:id"
                   element={<Private component={Profile} />}
+                />
+                <Route
+                  path="/settings"
+                  element={<Private component={Settings} />}
+                />
+                <Route
+                  path="/edit-profile"
+                  element={<Private component={ProfileForm} />}
                 />
               </Routes>
             </Fragment>

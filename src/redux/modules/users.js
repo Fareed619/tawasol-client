@@ -73,7 +73,7 @@ export const logOut = () => (dispatch) => {
 export const loadUser =  () => async (dispatch) => {
 
     try{
-        const res = await api.get("/users", );
+        const res = await api.get("/users" );
         dispatch({
             type: USER_LOADED,
             payload: res.data

@@ -12,6 +12,8 @@ export const PROFILE_ERROR = "profiles/PROFILE_ERROR";
 export const UPLOAD_PROFILE_IMAGE = "profiles/UPLOAD_PROFILE_IMAGE";
 export const PROFILE_CLEAR = "profiles/PROFILE_CLEAR";
 
+export const DELETE_PROFILE = "profiles/DELETE_PROFILE";
+
 export const getCurrentProfile = () => async (dispatch) => {
   try {
     const res = await api.get("/profiles/me");
@@ -100,7 +102,7 @@ export const uploadProfileImage = (data) => async (dispatch) => {
 export const getProfiles = () => async (dispatch) => {
   try {
     const res = await api.get("/profiles");
-    console.log("res", res)
+    console.log("res", res);
     dispatch({
       type: GET_PROFILES,
       payload: res.data,
@@ -119,7 +121,7 @@ export const getProfiles = () => async (dispatch) => {
 export const getProfileById = (userId) => async (dispatch) => {
   try {
     const res = await api.get(`/profiles/user/${userId}`);
-   
+
     dispatch({
       type: GET_PROFILE,
       payload: res.data,
@@ -228,6 +230,31 @@ export const deleteEducation = (id) => async (dispatch) => {
     });
   }
 };
+
+// delete profile
+export const deleteProfile = (naviget) => async (dispatch) => {
+  if (window.confirm("Are you sure? this aacn NOT be undone")) {
+    try {
+      await api.delete("/profiles");
+      dispatch({
+        type: DELETE_PROFILE,
+      });
+      dispatch(
+        showAlertMessage("Your Account has been permanently deleted")
+      );
+      naviget("/");
+    } catch (error) {
+      console.log(error.message);
+      dispatch({
+        type: PROFILE_ERROR,
+        payload: {
+          msg: error.response.statusText,
+          status: error.response.status,
+        },
+      });
+    }
+  }
+};
 // reducer
 
 const initialState = {
@@ -275,6 +302,15 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         profile: null,
+      };
+
+    case DELETE_PROFILE:
+      setAuthToken();
+      return {
+        ...state,
+        loading: false,
+        profile: null,
+        profiles: [],
       };
     default:
       return state;
