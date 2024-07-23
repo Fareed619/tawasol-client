@@ -3,8 +3,7 @@ import { formatData } from "../../utils";
 const Education = ({ profile, deleteEducation }) => {
   return (
     <div>
-      {profile.education.map((edu) => console.log("edu._id", edu._id) (
-        
+      {profile.education.map((edu) => (
         <div key={edu._id} className="container">
           {deleteEducation !== undefined ? (
             <div>

@@ -1,33 +1,30 @@
 import { connect } from "react-redux";
-import {
-  deleteEducation,
-  deleteExperience,
-  getCurrentProfile,
-} from "../redux/modules/profiles";
+import { getProfileById } from "../redux/modules/profiles";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getProfileImage } from "../utils";
 import BasicInfo from "./profileInfo/BasicInfo";
 import defaultImage from "../assets/default.png";
 import Education from "./profileInfo/Education";
 import Experience from "./profileInfo/Experience";
-const Home = ({
+const Profile = ({
   profile,
-  user,
-  getCurrentProfile,
-  deleteEducation,
-  deleteExperience,
+
+  getProfileById,
 }) => {
+  const { id } = useParams();
   console.log("profile in  home componnet", profile);
   const [image, setImage] = useState("");
   const [errored, setErrored] = useState(false);
-  useEffect(() => {
-    getCurrentProfile();
+  useEffect(
+    () => {
+      getProfileById(id);
 
-    if (user) {
-      setImage(getProfileImage(user._id));
-    }
-  }, [getCurrentProfile, user]);
+      setImage(getProfileImage(id));
+    },
+    [getProfileById],
+    id
+  );
 
   const onError = () => {
     if (!errored) {
@@ -60,21 +57,19 @@ const Home = ({
             <div className="home-column">
               <BasicInfo profile={profile} />
               <div className="social">
-              
                 {profile.social
                   ? Object.keys(profile.social)
                       .filter((media) => profile.social[media] !== "")
                       .map((media) => {
                         return (
                           <a
-                          key={media}
-                          rel="noreferrer"
-                          target="_blank"
-                          href={profile.social[media]}
+                            key={media}
+                            rel="noreferrer"
+                            target="_blank"
+                            href={profile.social[media]}
                           >
                             <i className={`fab fa-${media} fa-2x`} />
                           </a>
-                            
                         );
                       })
                   : null}
@@ -88,31 +83,18 @@ const Home = ({
                 <div className="home-column">
                   <h3>Education</h3>
                 </div>
-                <div className="home-column">
-                  <Link to="/add-education" className="add-button">
-                    <i className="fa fa-plus-circle fa-2x"></i>{" "}
-                  </Link>
-                </div>
               </div>
 
-              <Education profile={profile} deleteEducation={deleteEducation} />
+              <Education profile={profile} />
             </div>
             <div className="home-column">
               <div className="home-row">
                 <div className="home-column">
                   <h3>Experience</h3>
                 </div>
-                <div className="home-column">
-                  <Link to="/add-experience" className="add-button">
-                    <i className="fa fa-plus-circle fa-2x"></i>{" "}
-                  </Link>
-                </div>
               </div>
 
-              <Experience
-                profile={profile}
-                deleteExperience={deleteExperience}
-              />
+              <Experience profile={profile} />
             </div>
           </div>
         </div>
@@ -123,10 +105,7 @@ const Home = ({
 
 const mapStateToProps = (state) => ({
   profile: state.prfiles.profile,
-  user: state.users.user,
 });
 export default connect(mapStateToProps, {
-  getCurrentProfile,
-  deleteEducation,
-  deleteExperience,
-})(Home);
+  getProfileById,
+})(Profile);

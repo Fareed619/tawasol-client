@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Landing from "./components/Landing";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import store from "./redux/store";
 import { Provider } from "react-redux";
@@ -15,7 +15,11 @@ import Private from "./components/Private";
 import Home from "./components/Home";
 import ProfileForm from "./components/ProfileForms/ProfileForm";
 import AddEducation from "./components/ProfileForms/AddEducation";
-
+import AddExperience from "./components/ProfileForms/AddExperience";
+import { setAuthToken } from "./utils";
+import { loadUser } from "./redux/modules/users";
+import Developers from "./components/Developers";
+import Profile from "./components/Profile";
 const options = {
   position: positions.TOP_RIGHT,
   timeout: 5000,
@@ -24,7 +28,14 @@ const options = {
 };
 
 function App() {
+  useEffect(() => {
+    if (localStorage.token) {
+      setAuthToken(localStorage.token);
+    }
+    store.dispatch(loadUser());
+  }, []);
   console.log(store.getState());
+
   return (
     <div className="App">
       <Provider store={store}>
@@ -45,6 +56,18 @@ function App() {
                 <Route
                   path="/add-education"
                   element={<Private component={AddEducation} />}
+                />
+                <Route
+                  path="/add-experience"
+                  element={<Private component={AddExperience} />}
+                />
+                <Route
+                  path="/developers"
+                  element={<Private component={Developers} />}
+                />
+                <Route
+                  path="/profile/:id"
+                  element={<Private component={Profile} />}
                 />
               </Routes>
             </Fragment>

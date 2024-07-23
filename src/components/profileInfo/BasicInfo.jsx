@@ -1,5 +1,6 @@
 const BasicInfo = ({ profile }) => {
   console.log("profile obj in basic info", profile);
+
   return (
     <div>
       <div className="container">
@@ -19,12 +20,12 @@ const BasicInfo = ({ profile }) => {
       <div className="container">
         <p>
           {profile.skills.map((skill, index) => {
-            return(
-            <span key={index}>
-              {" "}
-              &#10004; {skill} <br />
-            </span>
-            )
+            return (
+              <span key={index}>
+                {" "}
+                &#10004; {skill} <br />
+              </span>
+            );
           })}
         </p>
       </div>

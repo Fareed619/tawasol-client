@@ -1,13 +1,16 @@
 /* eslint-disable no-undef */
 import { api, setAuthToken } from "../../utils";
 import { showAlertMessage } from "./alerts";
+import store from "../store";
 
 // actions
 
 export const GET_PROFILE = "profiles/GET_PROFILE";
+export const GET_PROFILES = "profiles/GET_PROFILES";
 export const UPDATE_PROFILE = "profiles/UPDATE_PROFILE";
 export const PROFILE_ERROR = "profiles/PROFILE_ERROR";
 export const UPLOAD_PROFILE_IMAGE = "profiles/UPLOAD_PROFILE_IMAGE";
+export const PROFILE_CLEAR = "profiles/PROFILE_CLEAR";
 
 export const getCurrentProfile = () => async (dispatch) => {
   try {
@@ -19,7 +22,7 @@ export const getCurrentProfile = () => async (dispatch) => {
     });
   } catch (error) {
     console.error("/me", error.response.data.msg);
-    
+
     dispatch({
       type: PROFILE_ERROR,
       payload: {
@@ -35,6 +38,10 @@ export const createProfile =
   (formData, navigate, edit = false) =>
   async (dispatch) => {
     console.log("edit => ", edit);
+    console.log(
+      "form data to create or update profiles it will sent to server",
+      formData
+    );
 
     try {
       const res = await api.post("/profiles", formData);
@@ -90,10 +97,48 @@ export const uploadProfileImage = (data) => async (dispatch) => {
   }
 };
 
+export const getProfiles = () => async (dispatch) => {
+  try {
+    const res = await api.get("/profiles");
+    console.log("res", res)
+    dispatch({
+      type: GET_PROFILES,
+      payload: res.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: {
+        msg: error.response.statusText,
+        status: error.response.status,
+      },
+    });
+  }
+};
+
+export const getProfileById = (userId) => async (dispatch) => {
+  try {
+    const res = await api.get(`/profiles/user/${userId}`);
+   
+    dispatch({
+      type: GET_PROFILE,
+      payload: res.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: {
+        msg: error.response.statusText,
+        status: error.response.status,
+      },
+    });
+  }
+};
+
 export const addExperience = (formData, navigate) => async (dispatch) => {
   try {
     const res = await api.put("/profiles/experience", formData);
-    console.log("experenice respnose ===>>>0", res.data)
+    console.log("experenice respnose ===>>>0", res.data);
     dispatch({
       type: UPDATE_PROFILE,
       payload: res.data,
@@ -102,7 +147,7 @@ export const addExperience = (formData, navigate) => async (dispatch) => {
     dispatch(showAlertMessage("Experience added", "success"));
     navigate("/home");
   } catch (error) {
-    console.log(error)
+    console.log(error);
     const errors = error.response.data.errors;
     if (errors) {
       errors.forEach((err) => dispatch(showAlertMessage(err.msg, "error")));
@@ -111,14 +156,14 @@ export const addExperience = (formData, navigate) => async (dispatch) => {
 
   dispatch({
     type: PROFILE_ERROR,
-    payload: { msg: error.response.statusText, status: error.response.status },
+    payload: { msg: "error in adding experience" },
   });
 };
 
 export const addEducation = (formData, navigate) => async (dispatch) => {
   try {
     const res = await api.put("/profiles/education", formData);
-    console.log(res.data)
+    console.log(res.data);
     dispatch({
       type: UPDATE_PROFILE,
       payload: res.data,
@@ -127,7 +172,7 @@ export const addEducation = (formData, navigate) => async (dispatch) => {
     dispatch(showAlertMessage("Education added", "success"));
     navigate("/home");
   } catch (error) {
-    console.log(error)
+    console.log(error);
     const errors = error.response.data.errors;
     if (errors) {
       errors.forEach((err) => dispatch(showAlertMessage(err.msg, "error")));
@@ -136,13 +181,13 @@ export const addEducation = (formData, navigate) => async (dispatch) => {
 
   dispatch({
     type: PROFILE_ERROR,
-    payload: {msg: "there is error in adding education" },
+    payload: { msg: "there is error in adding education" },
   });
 };
 
 export const deleteExperience = (id) => async (dispatch) => {
   try {
-    const res = api.delete(`/profiles/experience/${id}`);
+    const res = await api.delete(`/profiles/experience/${id}`);
     dispatch({
       type: UPDATE_PROFILE,
       payload: res.data,
@@ -160,14 +205,20 @@ export const deleteExperience = (id) => async (dispatch) => {
 };
 
 export const deleteEducation = (id) => async (dispatch) => {
+  dispatch({
+    type: PROFILE_CLEAR,
+  });
   try {
-    const res = api.delete(`/profiles/education/${id}`);
+    const res = await api.delete(`/profiles/education/${id}`);
+    console.log("response in delete education", res);
     dispatch({
       type: UPDATE_PROFILE,
       payload: res.data,
     });
     dispatch(showAlertMessage("Education Removed", "success"));
+    console.log(store.getState());
   } catch (error) {
+    console.log("error in education delete", error);
     dispatch({
       type: PROFILE_ERROR,
       payload: {
@@ -184,6 +235,7 @@ const initialState = {
   loading: true,
   error: {},
   image: null,
+  profiles: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -196,6 +248,12 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         profile: payload,
+        loading: false,
+      };
+    case GET_PROFILES:
+      return {
+        ...state,
+        profiles: payload,
         loading: false,
       };
     case PROFILE_ERROR:
@@ -211,6 +269,12 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         imgae: payload,
+      };
+
+    case PROFILE_CLEAR:
+      return {
+        ...state,
+        profile: null,
       };
     default:
       return state;
