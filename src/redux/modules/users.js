@@ -63,6 +63,7 @@ export const logOut = () => (dispatch) => {
     dispatch({
         type:LOGOUT
     })
+    dispatch(showAlertMessage("You Logged out successfuly"))
 }
 
 
