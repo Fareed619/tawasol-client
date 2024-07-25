@@ -21,6 +21,8 @@ import { loadUser } from "./redux/modules/users";
 import Developers from "./components/Developers";
 import Profile from "./components/Profile";
 import Settings from "./components/Settings";
+import Posts from "./components/posts/Posts";
+import Post from "./components/posts/Post";
 const options = {
   position: positions.TOP_RIGHT,
   timeout: 5000,
@@ -78,6 +80,8 @@ function App() {
                   path="/edit-profile"
                   element={<Private component={ProfileForm} />}
                 />
+                <Route path="/posts" element={<Private component={Posts} />} />
+                <Route path="/posts/:id" element={<Private component={Post} />} />
               </Routes>
             </Fragment>
           </AlertProvider>
