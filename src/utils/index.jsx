@@ -3,7 +3,7 @@ import axios from "axios";
 const serverUrl = "https://tawasol-app.onrender.com";
 
 export const api = axios.create({
-  baseURL: `${serverUrl}api`,
+  baseURL: `${serverUrl}/api`,
   headers: {
     "Content-Type": "application/json",
   },
