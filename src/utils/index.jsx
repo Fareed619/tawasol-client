@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const serverUrl = "https://tawasol-app.onrender.com";
+const serverUrl = "https://tawasol-app.onrender";
 
 export const api = axios.create({
   baseURL: `${serverUrl}/api`,
